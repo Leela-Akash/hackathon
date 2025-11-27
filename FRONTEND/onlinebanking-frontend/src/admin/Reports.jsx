@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { formatRate } from '../utils/format';
 import './admincss/Reports.css';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/admin`;
@@ -205,7 +206,7 @@ export default function Reports() {
           <div className="stat-card success">
             <div className="stat-icon">✅</div>
             <div className="stat-content">
-              <h3>{systemHealth.transactionSuccessRate?.toFixed(1)}%</h3>
+              <h3>{formatRate(systemHealth.transactionSuccessRate, 1)}%</h3>
               <p>Transaction Success Rate</p>
             </div>
           </div>

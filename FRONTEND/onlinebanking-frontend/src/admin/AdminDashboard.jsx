@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { formatRate, normalizeTransactionSuccessRate } from "../utils/format";
 import "./admincss/AdminDashboard.css";
 
 const API_URL = `${import.meta.env.VITE_API_URL}/admin`;
@@ -34,6 +35,10 @@ export default function AdminDashboard() {
         ]);
 
         const reports = reportsRes.data;
+        // Normalize transactionSuccessRate to handle various API response formats
+        const normalizedRate = normalizeTransactionSuccessRate(
+          reports.systemHealth?.transactionSuccessRate
+        );
         setStats({
           customerCount: reports.userStats?.totalCustomers || 0,
           activeAccounts: reports.userStats?.activeAccounts || 0,
@@ -44,7 +49,7 @@ export default function AdminDashboard() {
           activeLoans: reports.loanStats?.activeLoans || 0,
           overdueLoans: reports.loanStats?.overdueLoans || 0,
           revenue: reports.revenueStats?.totalRevenue || 0,
-          transactionSuccessRate: reports.systemHealth?.transactionSuccessRate || 0,
+          transactionSuccessRate: normalizedRate ?? 0,
           apiUptime: reports.systemHealth?.apiUptime || 0
         });
       } catch (error) {
@@ -135,7 +140,7 @@ export default function AdminDashboard() {
         <div className="stat-card health-card">
           <div className="stat-icon">⚡</div>
           <div className="stat-content">
-            <h3>{stats.transactionSuccessRate?.toFixed(1)}%</h3>
+            <h3>{formatRate(stats.transactionSuccessRate, 1)}%</h3>
             <p>Transaction Success Rate</p>
             <small>API Uptime: {stats.apiUptime}%</small>
           </div>
